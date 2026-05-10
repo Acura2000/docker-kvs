@@ -4,13 +4,19 @@ pipeline {
 		DOCKERHUB_USER = "partico"
 		BUILD_HOST = "root@192.168.64.4"
 		PROD_HOST = "root@192.168.64.5"
-		BUILD_TIMESTAMP = sh(script: "date +%Y%m%d-%H%M%S", return Stdout: true).trim()
 	}
-	stage {
+	stages {
+		stage('Initialize') {
+			steps {
+				script {
+					BUILD_TIMESTAMP = sh(script: "date +%Y%m%d-%H%M%S", returnStdout: true).trim()
+				}
+			}
+		}
 		stage('Pre check') {
 			steps {
 				sh "test -f ~/.docker/config.json"
-				sh "cat ~/.docker/config.json | grep docker.io
+				sh "cat ~/.docker/config.json | grep docker.io"
 			}
 		}
 		stage('Build') {
@@ -26,7 +32,7 @@ pipeline {
 		stage('Test') {
 			steps {
 				sh "docker -H ssh://${BUILD_HOST} container exec dockerkvs_apptest pytest -v test_app.py"
-				sh "docker -H ssh://${BUILD_HOST} conteiner exec dockerkvs_webtest pytest -v test_static.py"
+				sh "docker -H ssh://${BUILD_HOST} container exec dockerkvs_webtest pytest -v test_static.py"
 				sh "docker -H ssh://${BUILD_HOST} container exec dockerkvs_webtest pytest -v test_selenium.py"
 				sh "docker compose -H ssh://${BUILD_HOST} -f docker-compose.build.yml down"
 			}
