@@ -42,7 +42,8 @@ services:
     environment:
       APP_HOST: app
       APP_PORT: 80
-      
+    networks:
+      - kvs_net
   web: 
     build:
       context: ./web
@@ -66,17 +67,23 @@ services:
     restart: "no"
     depends_on:
       - db
+    ports:
+      - "8080:80"
     environment:
       REDIS_HOST: db
       REDIS_PORT: 6379
       REDIS_DB: 0
+    networks:
+      - kvs_net
   db:
     image: redis:5.0.6-alpine3.10
     restart: "no"
     container_name: dockerkvs_db
     volumes:
       - dockerkvs_redis_volume:/data
-      
+networks:
+  kvs_net:
+    driver: bridge
 volumes:
   dockerkvs_redis_volume:
     driver: local
