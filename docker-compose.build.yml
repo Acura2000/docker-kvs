@@ -1,17 +1,18 @@
 services:
   selenium_chrome:
-    image: selenium/node-chrome:3.141.59-vanadium
+    image: seleniarm/node-chromium:4.1.2-20220227  # ARM対応のChromiumノードに変更 
     container_name: dockerkvs_selenium_chrome
     depends_on:
       - selenium_hub
     environment:
-      - HUB_HOST=selenium_hub
-      - HUB_PORT=4444
+      - SE_EVENT_BUS_HOST=selenium_hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4444
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
     networks:
       - kvs_net
 
   selenium_hub:
-    image: selenium/hub:3.141.59-vanadium
+    image: seleniarm/hub:4.1.2-20220227  # ARM対応のHubに変更
     container_name: dockerkvs_selenium_hub
     ports:
       - 4444:4444
