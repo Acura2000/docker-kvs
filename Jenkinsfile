@@ -22,10 +22,10 @@ pipeline {
 		stage('Build') {
 			steps {
 				sh "cat docker-compose.build.yml"
-				withEnv(["DOCKER_HOST=ssh://${BUILD_HOST}"]) {
+				withEnv(["DOCKER_HOST=ssh://${BUILD_HOST}", "BUILDX_NO_DEFAULT_ATTESTATIONS=1"]) {
 					sh "docker compose -f docker-compose.build.yml down"
 					sh "docker volume prune -f"
-					sh "docker compose -f docker-compose.build.yml build"
+					sh "docker compose -f docker-compose.build.yml build --no-cache"
 					sh "docker compose -f docker-compose.build.yml up -d"
 					sh "docker compose -f docker-compose.build.yml ps"
 				}
