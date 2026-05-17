@@ -34,7 +34,7 @@ pipeline {
 		stage('Test') {
 			steps {
 				withEnv(["DOCKER_HOST=ssh://${BUILD_HOST}"]) {
-					sh "sleep 5"
+					sh "sleep 10"
 					sh "docker compose -f docker-compose.build.yml exec -T apptest pytest -v test_app.py"
 					sh "docker compose -f docker-compose.build.yml exec -T webtest pytest -v test_static.py"
 					sh "docker compose -f docker-compose.build.yml exec -T webtest pytest -v test_selenium.py"
